@@ -2,8 +2,9 @@ package com.example.productservicefeb24.controllers;
 
 
 import com.example.productservicefeb24.DTOs.CreateProductRequestDto;
-//import com.example.productservicefeb24.DTOs.ErrorDto;
+import com.example.productservicefeb24.DTOs.ErrorDto;
 //import com.example.productservicefeb24.exceptions.ProductNotFoundException;
+import com.example.productservicefeb24.exceptions.ProductNotFoundException;
 import com.example.productservicefeb24.models.Product;
 import com.example.productservicefeb24.services.FakeStoreProductService;
 import com.example.productservicefeb24.services.ProductService;
@@ -15,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-//java.util.List;
+import java.util.List;
+
+
 
 @RestController
 public class ProductController {
@@ -41,13 +44,7 @@ public class ProductController {
      */
     @PostMapping("/products")
     public Product createProduct(@RequestBody CreateProductRequestDto request) {
-        return productService.createProduct(
-                request.getTitle(),
-                request.getDescription(),
-                request.getCategory(),
-                request.getPrice(),
-                request.getImage()
-        );
+        return productService.createProduct(request.getTitle(), request.getDescription(), request.getCategory(), request.getPrice(), request.getImage());
     }
 
     //GET /products/1
@@ -58,8 +55,12 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public void getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts() throws ProductNotFoundException {
 
+        List<Product> products = productService.getProducts();
+
+        ResponseEntity<List<Product>> response = new ResponseEntity<>(products, HttpStatus.OK);
+        return response;
     }
 
     public void updateProduct() {
